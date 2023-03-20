@@ -81,17 +81,17 @@ def buy():
         try:
             symbol = lookup(request.form.get("symbol"))["symbol"]
         except TypeError:
-            return apology("symbol doesn't exist", 403)
+            return apology("symbol doesn't exist", 400)
 
         # Check if shares is an integer
         try:
             shares = int(request.form.get("shares"))
         except ValueError:
-            return apology("input a number for shares", 403)
+            return apology("input a number for shares", 400)
 
         # Check if shares is > 0
         if not shares > 0:
-            return apology("Can't buy negative amount of shares", 403)
+            return apology("Can't buy negative amount of shares", 400)
 
         # Get user's cash and buy cost
         cash = db.execute(
@@ -102,7 +102,7 @@ def buy():
 
         # Check if user has enough cash
         if cash < cost:
-            return apology("Not enough cash", 403)
+            return apology("Not enough cash", 400)
 
         # Subtract cost from user's cash
         db.execute(
@@ -170,30 +170,30 @@ def change_password():
 
         # Ensure current_password was submitted
         if not current_password:
-            return apology("must provide current password", 403)
+            return apology("must provide current password", 400)
 
         # Ensure new_password was submitted
         elif not new_password:
-            return apology("must provide new password", 403)
+            return apology("must provide new password", 400)
 
         # Ensure confirmation password was submitted
         elif not confirmation:
-            return apology("must confirm new password", 403)
+            return apology("must confirm new password", 400)
 
         # Ensure old and new password are different
         elif current_password == new_password:
-            return apology("Old and new password are the same", 403)
+            return apology("Old and new password are the same", 400)
 
         # Ensure password and confirmation password are the same
         elif confirmation != new_password:
-            return apology("password confirmation failed", 403)
+            return apology("password confirmation failed", 400)
 
         # Ensure current_password and current_hash are the same
         current_hash = db.execute(
             "SELECT hash FROM users WHERE user_id = ?", session["user_id"]
         )[0]["hash"]
         if not check_password_hash(current_hash, current_password):
-            return apology("wrong password", 403)
+            return apology("wrong password", 400)
 
         # store new hash in database
         db.execute(
@@ -236,18 +236,18 @@ def login():
 
         # Ensure username was submitted
         if not username:
-            return apology("must provide username", 403)
+            return apology("must provide username", 400)
 
         # Ensure password was submitted
         elif not password:
-            return apology("must provide password", 403)
+            return apology("must provide password", 400)
 
         # Query database for username
         rows = db.execute("SELECT * FROM users WHERE username = ?", username)
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], password):
-            return apology("invalid username and/or password", 403)
+            return apology("invalid username and/or password", 400)
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["user_id"]
@@ -281,7 +281,7 @@ def quote():
         try:
             symbol = lookup(request.form.get("symbol"))["symbol"]
         except TypeError:
-            return apology("symbol doesn't exist", 403)
+            return apology("symbol doesn't exist", 400)
 
         name = lookup(request.form.get("symbol"))["name"]
         price = usd(lookup(request.form.get("symbol"))["price"])
@@ -306,26 +306,26 @@ def register():
 
         # Ensure username was submitted
         if not username:
-            return apology("must provide username", 403)
+            return apology("must provide username", 400)
 
         # Ensure password was submitted
         elif not password:
-            return apology("must provide password", 403)
+            return apology("must provide password", 400)
 
         # Ensure confirmation password was submitted
         elif not confirmation:
-            return apology("must confirm password", 403)
+            return apology("must confirm password", 400)
 
         # Ensure password and confirmation password are the same
         elif confirmation != password:
-            return apology("password confirmation failed", 403)
+            return apology("password confirmation failed", 400)
 
         # Query database for username
         rows = db.execute("SELECT * FROM users WHERE username = ?", username)
 
         # Ensure username is not taken
         if len(rows) != 0:
-            return apology("username already taken", 403)
+            return apology("username already taken", 400)
 
         # Input user into database
         db.execute(
@@ -359,17 +359,17 @@ def sell():
             )
             == 0
         ):
-            return apology("You don't own shares of that company", 403)
+            return apology("You don't own shares of that company", 400)
 
         # Check if shares is an integer
         try:
             shares = int(request.form.get("shares"))
         except ValueError:
-            return apology("input a number for shares", 403)
+            return apology("input a number for shares", 400)
 
         # Check if shares is > 0
         if not shares > 0:
-            return apology("Can't sell less than 1 share", 403)
+            return apology("Can't sell less than 1 share", 400)
 
         # Check if user has enough shares
         shares_owned = db.execute(
@@ -378,7 +378,7 @@ def sell():
             symbol,
         )[0]["shares"]
         if shares > shares_owned:
-            return apology("Not enough shares to sell", 403)
+            return apology("Not enough shares to sell", 400)
 
         # Add profits to user's cash
         price = lookup(symbol)["price"]
