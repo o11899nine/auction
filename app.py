@@ -56,12 +56,12 @@ def index():
             symbol,
         )
 
-    cash = db.execute("SELECT cash FROM users WHERE user_id = ?", session["user_id"])[
+    cash = round(db.execute("SELECT cash FROM users WHERE user_id = ?", session["user_id"])[
         0
-    ]["cash"]
-    totalstock = db.execute(
+    ]["cash"], 2)
+    totalstock = round(db.execute(
         "SELECT SUM(total) FROM portfolio WHERE user_id = ?", session["user_id"]
-    )[0]["SUM(total)"]
+    )[0]["SUM(total)"], 2)
 
     if len(portfolio) > 0:
         total = cash + totalstock
