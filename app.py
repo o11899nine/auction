@@ -424,4 +424,5 @@ def sell():
 
     # User reached route via GET (as by clicking a link or via redirect)
     elif request.method == "GET":
-        return render_template("sell.html")
+        portfolio = db.execute("SELECT symbol FROM portfolio WHERE user_id = ?", session["user_id"])
+        return render_template("sell.html", portfolio=portfolio)
