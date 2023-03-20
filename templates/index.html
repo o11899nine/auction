@@ -26,17 +26,17 @@ Index
             <td>{{ stock.symbol }}</td>
             <td>{{ stock.name }}</td>
             <td>{{ stock.shares }}</td>
-            <td>${{ stock.price }}</td>
-            <td>${{ stock.total }}</td>
+            <td>{{ stock.price | usd }}</td>
+            <td>{{ stock.total | usd }}</td>
         </tr>
         {% endfor %}
         <tr>
             <td colspan="4">Cash</td>
-            <td>${{ cash  }}</td>
+            <td>{{ cash | usd   }}</td>
         </tr>
         <tr>
             <td colspan="4">TOTAL</td>
-            <td>${{ total  }}</td>
+            <td>{{ total | usd   }}</td>
         </tr>
     </tbody>
 </table>

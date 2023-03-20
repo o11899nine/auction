@@ -56,13 +56,13 @@ def index():
             symbol,
         )
 
-    cash = round(db.execute("SELECT cash FROM users WHERE user_id = ?", session["user_id"])[
+    cash = db.execute("SELECT cash FROM users WHERE user_id = ?", session["user_id"])[
         0
-    ]["cash"], 2)
+    ]["cash"]
     if len(portfolio) > 0:
-        totalstock = round(db.execute(
+        totalstock = db.execute(
             "SELECT SUM(total) FROM portfolio WHERE user_id = ?", session["user_id"]
-        )[0]["SUM(total)"], 2)
+        )[0]["SUM(total)"]
 
         total = cash + totalstock
         return render_template(
@@ -98,7 +98,7 @@ def buy():
             "SELECT cash FROM users WHERE user_id = ?", session["user_id"]
         )[0]["cash"]
         price = lookup(request.form.get("symbol"))["price"]
-        cost = round((price * shares), 2)
+        cost = price * shares
 
         # Check if user has enough cash
         if cash < cost:
@@ -382,7 +382,7 @@ def sell():
 
         # Add profits to user's cash
         price = lookup(symbol)["price"]
-        profit = round((shares * price), 2)
+        profit = shares * price
         db.execute(
             "UPDATE users SET cash = cash + ? WHERE user_id = ?",
             profit,
