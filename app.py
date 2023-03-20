@@ -45,29 +45,30 @@ def index():
         session["user_id"],
     )
 
-    # update current prices
-    for i in range(len(portfolio)):
-        symbol = portfolio[i]["symbol"]
-        current_price = lookup(symbol)["price"]
-        db.execute(
-            "UPDATE portfolio SET price = ? WHERE user_id = ? AND symbol = ?",
-            current_price,
-            session["user_id"],
-            symbol,
-        )
-
-    cash = round(db.execute("SELECT cash FROM users WHERE user_id = ?", session["user_id"])[
-        0
-    ]["cash"], 2)
-    totalstock = round(db.execute(
-        "SELECT SUM(total) FROM portfolio WHERE user_id = ?", session["user_id"]
-    )[0]["SUM(total)"], 2)
-
     if len(portfolio) > 0:
-        total = cash + totalstock
-        return render_template(
-            "index.html", portfolio=portfolio, cash=cash, total=total, message=""
-        )
+        # update current prices
+        for i in range(len(portfolio)):
+            symbol = portfolio[i]["symbol"]
+            current_price = lookup(symbol)["price"]
+            db.execute(
+                "UPDATE portfolio SET price = ? WHERE user_id = ? AND symbol = ?",
+                current_price,
+                session["user_id"],
+                symbol,
+            )
+
+        cash = round(db.execute("SELECT cash FROM users WHERE user_id = ?", session["user_id"])[
+            0
+        ]["cash"], 2)
+        totalstock = round(db.execute(
+            "SELECT SUM(total) FROM portfolio WHERE user_id = ?", session["user_id"]
+        )[0]["SUM(total)"], 2)
+
+            total = cash + totalstock
+            return render_template(
+                "index.html", portfolio=portfolio, cash=cash, total=total, message=""
+            )
+    
     return render_template("index.html", message="You don't own any stock")
 
 
