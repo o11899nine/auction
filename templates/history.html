@@ -24,7 +24,7 @@ History
             <td>{{ transaction.type }}</td>
             <td>{{ transaction.symbol }}</td>
             <td>{{ transaction.shares }}</td>
-            <td>${{ transaction.cost }}</td>
+            <td>{{ transaction.cost | usd }}</td>
         </tr>
         {% endfor %}
     </tbody>
