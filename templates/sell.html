@@ -7,7 +7,7 @@
 {% block main %}
     <form action="/sell" method="post">
         <div class="mb-3">
-            <select class="form-select-mb-3" aria-label="Default select example" name="symbol">
+            <select autofocus class="form-select mx-auto w-auto" aria-label="Default select example" name="symbol" required>
                 <option selected disabled>Symbol</option>
                 {% for stock in portfolio %}
                 <option value="{{ stock.symbol }}">{{ stock.symbol }}</option>
@@ -15,7 +15,7 @@
               </select>
         </div>
         <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="shares" name="shares" placeholder="Shares" type="text" required>
+            <input autocomplete="off" class="form-control mx-auto w-auto" id="shares" name="shares" placeholder="Shares" type="text" required>
         </div>
         <button class="btn btn-primary" type="submit">Sell shares</button>
     </form>
