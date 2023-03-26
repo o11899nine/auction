@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Alle projecten{% endblock%}
+{% block style %}
+<style>
+    #mycontainer {
+        justify-content: start;
+        align-items: center;
+        padding-top: 3vh;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="mycontainer">
+    <div class="col-10 col-md-5">
+                <h4 class="title text-primary" style="text-align: center">
+                    Alle projecten
+                </h4>
+        {% for project in projects %}
+        <!-- card -->
+        <div class="card mt-4">
+            <h5 class="card-header">{{ project.title }}</h5>
+            <div class="card-body">
+                <p><strong>{{ project.author }}</strong></p>
+                <p class="card-text">{{ project.description }}</p>
+                <a href="{{ project.link }}" class="btn btn-outline-primary">Bekijk project</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

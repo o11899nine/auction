@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Nieuw project{% endblock%}
+{% block style %}
+<style>
+    #mycontainer {
+        justify-content: start;
+        align-items: center;
+        padding-top: 3vh;
+    }
+</style>
+{% endblock %}
+{% block content %}
+
+<div id="mycontainer">
+    <!-- card -->
+    <div class="col-10 col-md-5">
+        <h4 class="title text-primary" style="text-align: center">
+            Nieuw project
+        </h4>
+        <div class="card mt-4">
+            <div class="card-body py-5 px-md-5">
+                <!-- Displays flashed messages -->
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="alert alert-warning d-flex mb-4" role="alert">
+                    {% for message in messages %}
+                    {{ message }}<br>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+                <!-- Displays form error messages -->
+                {% if form.errors %}
+                <div class="alert alert-danger d-flex mb-4" role="alert">
+                    {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+                    {% for error in field_errors %}
+                    {{ error }}<br>
+                    {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <form method="POST" action="/new_project">
+                    {{ form.csrf_token }}
+                    <!-- title input -->
+                    <div class="form-outline mb-4 col-lg-6">
+                        {{ form.title(class="form-control", placeholder="Titel", autocomplete="off", maxlength="39") }}
+                    </div>
+                    <!-- description input -->
+                    <div class="form-outline mb-4">
+                        {{ form.description(class="form-control", placeholder="Beschrijving", rows="11", maxlength="1000", style="resize: none;") }}
+                    </div>
+
+                    <!-- link input -->
+                    <div class="row">
+                        <div class="form-outline mb-4 col-lg-7">
+                            {{ form.link(class="form-control", placeholder="Link", autocomplete="off") }}
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary">
+                            Maak project
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
