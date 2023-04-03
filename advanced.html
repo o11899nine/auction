@@ -7,17 +7,50 @@
 </head>
 
 <body>
+    <!-- small logo -->
+    <div class="small-logo">
+        <span style="color:#4285F4;">G</span><span style="color:#E94638;">o</span><span
+            style="color:#FBBC05;">o</span><span style="color:#4285F4;;">g</span><span
+            style="color:#34A853;">l</span><span style="color:#E94638;">e</span>
+    </div>
+
     <!-- navbar -->
     <div class="mynavbar">
         <ul>
             <li class="nav-item"><a href="/index.html">Google Search</a></li>
-            <li class="nav-item"><a href="/image.html">Image search</a></li>
         </ul>
     </div>
 
+    <!-- title -->
+    <div class="title">
+        Advanced search
+    </div>
+
     <!-- advanced search -->
-    <label for="allwords">all these words:</label>
-    <input id="allwords" name="allwords" type="text" />
+    <div class="formdiv">
+        <h5>Find pages with..</h5>
+    <form action="https://google.com/search">
+        <table>
+            <tr>
+                <td><label for="allwords">all these words:</label></td>
+                <td><input id="allwords" name="as_q" type="text" /></td>
+            </tr>
+            <tr>
+                <td><label for="exact">this exact word or phrase:</label></td>
+                <td><input id="exact" name="as_epq" type="text" /></td>
+            </tr>
+            <tr>
+                <td><label for="any">any of these words:</label></td>
+                <td><input id="any" name="as_oq" type="text" /></td>
+            </tr>
+            <tr>
+                <td><label for="none">none of these words:</label></td>
+                <td><input id="none" name="as_eq" type="text" /></td>
+            </tr>
+        </table><br>
+        <button type="submit" value="Advanced Search" class="blue-button">Advanced Search</button>
+    </form>
+    </div>
 
 
 </body>
