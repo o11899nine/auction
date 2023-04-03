@@ -1,0 +1,21 @@
+.mynavbar {
+    height: 30px;
+    border-bottom: 1px solid rgb(212, 212, 212);
+    padding-bottom: 5px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.mynavbar li {
+    display: inline;
+    padding-right: 5px;
+}
+
+.searchbar {
+    background-color: red;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 100px;
+}
