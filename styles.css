@@ -1,3 +1,49 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+
+.searchdiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 100px;
+}
+.searchdiv form {
+    text-align: center;
+}
+
+.searchdiv input {
+    display: block;
+}
+
+.searchdiv button {
+    display: inline-block;
+    height: 40px;
+    border-radius: 5px;
+    font-size: medium;
+    border: none;
+    margin-top: 10px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.searchdiv button:hover {
+    background-color: lightgrey;
+}
+
+.searchfield {
+    font-size: larger;
+    border: 2px solid grey;
+    border-radius: 20px;
+    padding: 5px;
+    padding-left: 10px;
+    width: 80vw;
+    max-width: 600px;
+}
+
+/* Navbar */
 .mynavbar {
     height: 30px;
     border-bottom: 1px solid rgb(212, 212, 212);
@@ -7,15 +53,24 @@
     align-items: center;
 }
 
-.mynavbar li {
+.nav-item {
+    padding: 5px;
     display: inline;
-    padding-right: 5px;
 }
 
-.searchbar {
-    background-color: red;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding-top: 100px;
+.nav-item a:link {
+    text-decoration: none;
+    color: rgb(104, 104, 104);
+}
+.nav-item a:visited {
+    color: rgb(104, 104, 104);
+    text-decoration: none;
+}
+.nav-item a:hover {
+    text-decoration: none;
+    color: rgb(172, 172, 172);
+}
+.nav-item a:active {
+    color: rgb(104, 104, 104);
+    text-decoration: none;
 }
