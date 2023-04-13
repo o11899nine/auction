@@ -14,13 +14,13 @@
                 <h2>Wiki</h2>
                 <form action="{% url 'encyclopedia:search' %}" method="POST">
                     {% csrf_token %}
-                    {{ form }}
+                    {{ search_form }}
                 </form>
                 <div>
                     <a href="{% url 'encyclopedia:index' %}">Home</a>
                 </div>
                 <div>
-                    Create New Page
+                    <a href="{% url 'encyclopedia:new_page' %}">Create new page</a>
                 </div>
                 <div>
                     <a href="{% url 'encyclopedia:random_page' %}">Random page</a>
