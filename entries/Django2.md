@@ -1,1 +1,0 @@
-A page about Django2
