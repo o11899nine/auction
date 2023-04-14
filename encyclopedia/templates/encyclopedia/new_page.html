@@ -9,14 +9,14 @@ New Page
 
 {% if messages %}
     {% for message in messages %}
-        {{ message }}
+        <span style="color:red;">{{ message }}</span>
     {% endfor %}
 {% endif %}
 
 <form action="{% url 'encyclopedia:new_page' %}" method="POST">
     {% csrf_token %}
     {{ entry_form.title }}<br><br>
-    {{ entry_form.contents }}<br><br>
+    {{ entry_form.content }}<br>
     <button type="submit">Submit</button>
 </form>
 {% endblock %}

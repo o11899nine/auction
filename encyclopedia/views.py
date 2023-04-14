@@ -7,6 +7,7 @@ from django.contrib import messages
 from . import util
 
 import random
+import re
 
 
 class SearchForm(forms.Form):
@@ -15,15 +16,26 @@ class SearchForm(forms.Form):
         widget=forms.TextInput(attrs={'placeholder': 'Search Encyclopedia'})
     )
 
+
 class EntryForm(forms.Form):
     title = forms.CharField(
         label="",
         widget=forms.TextInput(attrs={'placeholder': 'Enter title'})
     )
-    contents = forms.CharField(
+    content = forms.CharField(
         label="",
-        widget=forms.Textarea(attrs={"placeholder": "Enter contents", "style": "resize:none;height:400px;"})
+        widget=forms.Textarea(
+            attrs={"placeholder": "Enter content", "style": "resize:none;height:400px;"})
     )
+
+
+class EditForm(forms.Form):
+    content = forms.CharField(
+        label="",
+        widget=forms.Textarea(
+            attrs={"placeholder": "Enter content", "style": "resize:none;height:400px;"})
+    )
+
 
 def index(request):
     """ Shows list of all entries. Clicking on an entry redirects to that entry's page"""
@@ -36,7 +48,7 @@ def index(request):
 def entry(request, entry):
     """
     Visiting /wiki/TITLE, where TITLE is the title of an encyclopedia entry, s
-    hould render a page that displays the contents of that encyclopedia entry.
+    hould render a page that displays the content of that encyclopedia entry.
     """
     # The view should get the content of the encyclopedia entry by calling the appropriate util function.
     content = util.get_entry(entry)
@@ -96,6 +108,7 @@ def search(request):
     else:
         return redirect("encyclopedia:index")
 
+
 def random_page(request):
     """Clicking “Random Page” in the sidebar should take user to a random encyclopedia entry."""
     return redirect("encyclopedia:entry", entry=random.choice(util.list_entries()))
@@ -109,26 +122,50 @@ def new_page(request):
         # Check if form data is valid (server-side)
         if form.is_valid():
 
-            # Isolate the title and contents from the 'cleaned' version of form data
+            # Isolate the title and content from the 'cleaned' version of form data
             title = form.cleaned_data["title"]
-            contents = form.cleaned_data["contents"]
+            content = form.cleaned_data["content"]
 
             # If an encyclopedia entry already exists with the provided title, the user should be presented with an error message.
             if util.get_entry(title) != None:
-                messages.error(request, "An entry with this title already exists")
-                return redirect("encyclopedia:new_page")
-
+                messages.error(
+                    request, "An entry with this title already exists")
+                return render(request, "encyclopedia/new_page.html", {
+                    "entry_form": EntryForm(initial={"title": title, "content": content}),
+                    "search_form": SearchForm()})
 
             # Otherwise, the encyclopedia entry should be saved to disk, and the user should be taken to the new entry’s page.
             else:
-               with open(f"entries/{title}.md", "a") as file:
-                file.write(f"#{title}\n")
-                file.write(contents)
+                util.save_entry(title, content)
                 return redirect("encyclopedia:entry", entry=title)
-
-
 
     else:
         return render(request, "encyclopedia/new_page.html", {
             "entry_form": EntryForm(),
             "search_form": SearchForm()})
+
+
+def edit_page(request, entry):
+    """On each entry page, the user should be able to click a link to be taken to a page where the user can edit that entry's Markdown content in a textarea."""
+
+    if request.method == "POST":
+        form = EditForm(request.POST)
+
+        # Check if form data is valid (server-side)
+        if form.is_valid():
+
+            # Isolate the content from the 'cleaned' version of form data
+            content = re.sub("\r", "", form.cleaned_data["content"])
+
+            # Save changes to entry and redirect to entry page
+            util.save_entry(entry, content)
+            return redirect("encyclopedia:entry", entry=entry)
+
+    else:
+        content = re.sub("\r", "", util.get_entry(entry))
+
+        return render(request, "encyclopedia/edit_page.html", {
+            "entry": entry,
+            "edit_form": EditForm(initial={"content": content}),
+            "search_form": SearchForm()
+        })
