@@ -17,4 +17,4 @@ class Listing(models.Model):
     description = models.CharField(max_length=5000)
     starting_bid = models.FloatField()
     image_url = models.URLField()
-    category = models.CharField(max_length=1, choices=CATEGORIES)
+    category = models.CharField(min_length=1, choices=CATEGORIES)
