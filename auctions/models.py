@@ -1,9 +1,10 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
 class User(AbstractUser):
-    pass
+    id = models.AutoField(primary_key=True)
 
 class Listing(models.Model):
     CATEGORIES = (
@@ -13,8 +14,11 @@ class Listing(models.Model):
         ('Furniture', 'Furniture'),
         ('Instruments', 'Instruments'),
     )
+    id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=64)
-    description = models.CharField(max_length=5000)
-    starting_bid = models.FloatField()
+    description = models.TextField(max_length=5000)
+    starting_bid = models.FloatField(
+        validators=[MinValueValidator(0), MaxValueValidator(999999999999999.99)],
+    )
     image_url = models.URLField()
-    category = models.CharField(min_length=1, choices=CATEGORIES)
+    category = models.CharField(max_length=64, choices=CATEGORIES)
