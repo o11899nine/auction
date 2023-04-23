@@ -7,7 +7,7 @@
 
     .card:hover {
         transform: scale(1.01);
-        box-shadow: 0 1px 4px rgba(0, 0, 0, .12), 0 1px 4px rgba(0, 0, 0, .14)
+        box-shadow: 0 1px 4px rgba(0, 0, 0, .12), 0 1px 4px rgba(0, 0, 0, .14);
     }
 
     .card-img-top {
@@ -22,7 +22,7 @@
 
 {% block body %}
 <!-- Grid for cards -->
-<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6 g-2 mb-2">
+<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6 g-2">
 
     <!-- Card for every listing -->
     {% for listing in all_listings %}
