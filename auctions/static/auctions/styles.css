@@ -1,7 +1,21 @@
-#signed_in_as {
-    color: #B5B7B8;
+body {
+    background-color: #F7F7F6;
 }
 
-body {
-    background-color: grey;
+.navbar-custom {
+    background-color: #EDA566;
+}
+
+.navbar-brand {
+    color: #2D3C4D;
+    font-weight: 700;
+}
+
+.mp-darkblue {
+    color: #2D3C4D;
+}
+
+.mp-link {
+    color: #116DB4;
+    text-decoration: none;
 }
