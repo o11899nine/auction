@@ -22,3 +22,4 @@ class Listing(models.Model):
     )
     image_url = models.URLField(blank=True)
     category = models.CharField(max_length=64, choices=CATEGORIES)
+    created_at = models.DateTimeField(auto_now_add=True)

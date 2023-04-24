@@ -1,0 +1,32 @@
+{% extends "auctions/layout.html" %}
+{% block title %}Create listing{% endblock %}
+{% load django_bootstrap5 %}
+{% block style %}<style>
+.container {
+    background-color: white;
+    max-width: 800px;
+}
+</style>{% endblock %}
+{% block body %}
+
+    <div class="container border rounded-4 shadow-sm p-4">
+        
+            
+                <form action="{% url 'create_listing' %}" method="post" class="form">
+                    {% csrf_token %}
+                    <div class="row">
+                    <div class="col-sm-8">{% bootstrap_field form.title %}</div>
+                    <div class="col-sm-4">{% bootstrap_field form.category %}</div>
+                    </div>
+                    <div class="col">{% bootstrap_field form.description %}</div>
+                    
+                    
+                    {% bootstrap_field form.image_url %}
+                    {% bootstrap_field form.starting_bid addon_before="€" %}
+                    {% bootstrap_button "Create listing" button_type="submit" button_class="btn-primary" %}
+                </form>
+            
+        
+    </div>
+
+{% endblock %}
