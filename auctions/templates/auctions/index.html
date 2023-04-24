@@ -18,11 +18,59 @@
     .card-text {
         font-size: 0.8rem;
     }
+
+    /* Listing grid */
+
+    .listing-grid>* {
+        width:50%; /* 2 cards*/
+        flex: 0 0 auto;
+    }
+
+    @media (min-width: 780px) {
+        .listing-grid>* {
+            width: 33.33%; /* 3 cards*/
+            flex: 0 0 auto;
+        }
+    }
+    @media (min-width: 1040px) {
+        .listing-grid>* {
+            width: 25%; /* 4 cards*/
+            flex: 0 0 auto;
+        }
+    }
+
+    @media (min-width: 1300px) {
+        .listing-grid>* {
+            width: 20%; /* 5 cards*/
+            flex: 0 0 auto;
+        }
+    }
+
+    @media (min-width: 1560px) {
+        .listing-grid>* {
+            width: 16.66%; /* 6 cards*/
+            flex: 0 0 auto;
+        }
+    }
+
+    @media (min-width: 1820px) {
+        .listing-grid>* {
+            width: 14.28%; /* 7 cards*/
+            flex: 0 0 auto;
+        }
+    }
+
+    @media (min-width: 2080px) {
+        .listing-grid>* {
+            width: 12.5%; /* 8 cards*/
+            flex: 0 0 auto;
+        }
+    }
 </style>{% endblock %}
 
 {% block body %}
 <!-- Grid for cards -->
-<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6 g-2">
+<div class="row listing-grid g-2">
 
     <!-- Card for every listing -->
     {% for listing in all_listings %}
