@@ -15,10 +15,32 @@ def index(request):
     })
 
 def create_listing(request):
-    form = CreateListingForm()
-    return render(request, "auctions/create_listing.html", {
-        "form": form
-    })
+    
+    if request.method == "POST":
+        form = CreateListingForm(request.POST)
+        title = request.POST["title"]
+        category = request.POST["category"]
+        description = request.POST["description"]
+        image_url = request.POST["image_url"]
+        starting_bid = request.POST["starting_bid"]
+
+        # Check if form data is valid (server-side)
+        if form.is_valid():
+            
+            # Create listing in database
+            listing = Listing(title=title, category=category, description=description, image_url=image_url, starting_bid=starting_bid)
+            listing.save()
+            return HttpResponseRedirect(reverse("index"))
+        
+        else:
+            return render(request, "auctions/create_listing.html", {
+                "form": CreateListingForm(initial={"title": title, "category": category, "description": description, "image_url": image_url, "starting_bid": starting_bid})
+                })
+
+    else:
+        return render(request, "auctions/create_listing.html", {
+            "form": CreateListingForm()
+        })
 
 def login_view(request):
     if request.method == "POST":

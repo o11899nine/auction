@@ -18,7 +18,7 @@ class Listing(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField(max_length=5000)
     starting_bid = models.FloatField(
-        validators=[MinValueValidator(0), MaxValueValidator(999999999999999.99)],
+        validators=[MinValueValidator(0), MaxValueValidator(1000000)],
     )
     image_url = models.URLField(blank=True)
     category = models.CharField(max_length=64, choices=CATEGORIES)
