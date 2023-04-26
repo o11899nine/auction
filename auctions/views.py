@@ -14,10 +14,15 @@ def index(request):
     })
 
 def listing(request, listing_id):
-    listing = Listing.objects.get(id=listing_id)
-    return render(request, "auctions/listing.html", {
-        "listing": listing
-    })
+    try:
+        listing = Listing.objects.get(id=listing_id)
+    except Listing.DoesNotExist:
+        # TODO: notfoundpage
+        return HttpResponseRedirect(reverse("index"))
+    else:
+        return render(request, "auctions/listing.html", {
+            "listing": listing
+        })
 
 def create_listing(request):
     

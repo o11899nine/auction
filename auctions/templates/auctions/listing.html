@@ -6,14 +6,19 @@
         background-color: white;
         max-width: 800px;
     }
-
 </style>{% endblock %}
 {% block content %}
 
 <div class="container border rounded-4 shadow-sm p-4">
     <h3 class="mp-darkblue">{{ listing.title }}</h3>
-    <img src="{{ listing.image_url}}">
-    <p>{{ listing.description }}</p>
+    {% if listing.image_url %}
+    <img src="{{ listing.image_url }}" alt="Listing image" class="card-img-top mx-auto"
+        onerror="this.src='https://lh3.googleusercontent.com/EbXw8rOdYxOGdXEFjgNP8lh-YAuUxwhOAe2jhrz3sgqvPeMac6a6tHvT35V6YMbyNvkZL4R_a2hcYBrtfUhLvhf-N2X3OB9cvH4uMw=w1064-v0', this."></a>
+    {% else %}
+    <img src="https://lh3.googleusercontent.com/EbXw8rOdYxOGdXEFjgNP8lh-YAuUxwhOAe2jhrz3sgqvPeMac6a6tHvT35V6YMbyNvkZL4R_a2hcYBrtfUhLvhf-N2X3OB9cvH4uMw=w1064-v0"
+        alt="Listing image" class="card-img-top mx-auto"></a>
+    {% endif %}
+    <p>{{ listing.description|linebreaks }}</p>
     <p>€{{ listing.starting_bid|floatformat:2 }}</p>
     <p>{{ listing.category }}</p>
     <p>{{ listing.created_at }}</p>
