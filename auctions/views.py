@@ -13,6 +13,12 @@ def index(request):
         "all_listings": Listing.objects.all().order_by("-created_at"),
     })
 
+def listing(request, listing_id):
+    listing = Listing.objects.get(id=listing_id)
+    return render(request, "auctions/listing.html", {
+        "listing": listing
+    })
+
 def create_listing(request):
     
     if request.method == "POST":

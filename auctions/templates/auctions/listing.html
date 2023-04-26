@@ -1,0 +1,17 @@
+{% extends "auctions/layout.html" %}
+{% block title %}Create listing{% endblock %}
+
+{% block style %}<style>
+    .container {
+        background-color: white;
+        max-width: 800px;
+    }
+
+</style>{% endblock %}
+{% block content %}
+
+<div class="container border rounded-4 shadow-sm p-4">
+    {{ listing.title }}
+</div>
+
+{% endblock %}
