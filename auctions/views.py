@@ -9,9 +9,8 @@ from .forms import CreateListingForm
 
 
 def index(request):
-
     return render(request, "auctions/index.html", {
-        "all_listings": Listing.objects.all().order_by("-created_at")
+        "all_listings": Listing.objects.all().order_by("-created_at"),
     })
 
 def create_listing(request):
