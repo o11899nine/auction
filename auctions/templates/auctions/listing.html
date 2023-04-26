@@ -1,27 +1,62 @@
 {% extends "auctions/layout.html" %}
-{% block title %}Create listing{% endblock %}
+{% block title %}{{ listing.title }}{% endblock %}
 
 {% block style %}<style>
     .container {
         background-color: white;
-        max-width: 800px;
+    }
+
+    .listing-img {
+        width: 100%;
+        object-fit: cover;
+    }
+
+    h6, h5 {
+        color:rgb(14, 14, 148);
     }
 </style>{% endblock %}
 {% block content %}
+<div class="row justify-content-center gy-4" style="word-wrap: break-word;">
+    <div class="col-12 col-lg-8 col-xl-6">
+        <div class="container border rounded-4 shadow-sm p-4">
+            <h3 class="mp-darkblue">{{ listing.title }}</h3>
+            <div class="row py-4">
+                <div class="col-12 col-sm-8 col-xl-6">{% if listing.image_url %}
+                    <img src="{{ listing.image_url }}" alt="Listing image" class="listing-img"
+                        onerror="this.src='{{ placeholder_img }}'"></a>
+                    {% else %}
+                    <img src="{{ placeholder_img }}" alt="Listing image" class="listing-img"></a>
+                    {% endif %}
+                </div>
+                <div class="col-12 col-sm-4 col-xl-4">
+                    <div class="row p-2">
+                        <h5>Highest bid</h5>
+                        <p style="font-size:1.5rem;">€{{ listing.starting_bid|floatformat:2}}</p>
+                    </div>
+                    <div class="row p-2">
+                        <h6>Sold by</h6>
+                        <p>{{ listing.user }}</p>
+                    </div>
+                    <div class="row p-2">
+                        <h6>Online since</h6>
+                        <p>{{ listing.created_at|date:"d F Y" }}</p>
+                    </div>
+                </div>
+            </div>
 
-<div class="container border rounded-4 shadow-sm p-4">
-    <h3 class="mp-darkblue">{{ listing.title }}</h3>
-    {% if listing.image_url %}
-    <img src="{{ listing.image_url }}" alt="Listing image" class="card-img-top mx-auto"
-        onerror="this.src='https://lh3.googleusercontent.com/EbXw8rOdYxOGdXEFjgNP8lh-YAuUxwhOAe2jhrz3sgqvPeMac6a6tHvT35V6YMbyNvkZL4R_a2hcYBrtfUhLvhf-N2X3OB9cvH4uMw=w1064-v0', this."></a>
-    {% else %}
-    <img src="https://lh3.googleusercontent.com/EbXw8rOdYxOGdXEFjgNP8lh-YAuUxwhOAe2jhrz3sgqvPeMac6a6tHvT35V6YMbyNvkZL4R_a2hcYBrtfUhLvhf-N2X3OB9cvH4uMw=w1064-v0"
-        alt="Listing image" class="card-img-top mx-auto"></a>
-    {% endif %}
-    <p>{{ listing.description|linebreaks }}</p>
-    <p>€{{ listing.starting_bid|floatformat:2 }}</p>
-    <p>{{ listing.category }}</p>
-    <p>{{ listing.created_at }}</p>
-</div>
 
-{% endblock %}
+            <div class="row p-2">
+                <h6>Description</h6>
+                <p>{{ listing.description|linebreaks }}</p>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-3 col-xl-2">
+        <div class="container border rounded-4 shadow-sm p-4">
+            <h3 class="mp-darkblue">Place bid</h3>
+        </div>
+    </div>
+
+
+    {% endblock %}
