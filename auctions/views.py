@@ -22,7 +22,6 @@ def index(request):
 @login_required
 def watchlist(request):
     """Shows user's watched listings and user's own listings"""
-
     return render(request, "auctions/watchlist.html", {
         "user_listings": Listing.objects.filter(user_id=request.user.id),
         "watched_listings": request.user.watched_listing.all(),
@@ -41,9 +40,14 @@ def listing(request, listing_id):
     
     # Show listing info   
     if request.method == "GET":
+        if request.user.is_authenticated:
+            on_watchlist = listing in request.user.watched_listing.all()
+        else:
+            on_watchlist = False
+    
         return render(request, "auctions/listing.html", {
             "listing": listing,
-            "on_watchlist": listing in request.user.watched_listing.all(),
+            "on_watchlist": on_watchlist,
             "placeholder_img": PLACEHOLDER_IMG
         })
     

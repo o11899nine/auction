@@ -34,17 +34,23 @@
             {% endif %}
         </div>
         <div class="col-12 col-sm-4 col-xl-4">
+            {% if user.is_authenticated %}
             <!-- Watchlist buttons -->
             <div class="row p-2">
                 <form action="{% url 'listing' listing.pk %}" method="post">
                     {% csrf_token %}
-                    {% if not on_watchlist %}
-                    <input class="btn btn-success btn-watchlist" name="add_watchlist" type="submit" value="+ Add to watchlist">
-                    {% else %}
-                    <input class="btn btn-danger btn-watchlist" name="rm_watchlist" type="submit" value="- Remove from watchlist">
-                    {% endif %}
+                    
+                        {% if not on_watchlist %}
+                        <input class="btn btn-success btn-watchlist" name="add_watchlist" type="submit"
+                            value="+ Add to watchlist">
+                        {% else %}
+                        <input class="btn btn-danger btn-watchlist" name="rm_watchlist" type="submit"
+                            value="- Remove from watchlist">
+                        {% endif %}
+                    
                 </form>
             </div>
+            {% endif %}
             <!-- Listing info -->
             <div class="row p-2">
                 <h5>Highest bid</h5>
