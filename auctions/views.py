@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.http import Http404
 
 from .models import User, Listing
 from .forms import CreateListingForm
@@ -11,48 +12,71 @@ from .globals import PLACEHOLDER_IMG
 
 
 def index(request):
+    """Homepage. Shows all listings by all users."""
+
     return render(request, "auctions/index.html", {
         "all_listings": Listing.objects.all().order_by("-created_at"),
         "placeholder_img": PLACEHOLDER_IMG
     })
 
+@login_required
+def watchlist(request):
+    """Shows user's watched listings and user's own listings"""
+
+    return render(request, "auctions/watchlist.html", {
+        "user_listings": Listing.objects.filter(user_id=request.user.id),
+        "watched_listings": request.user.watched_listing.all(),
+        "placeholder_img": PLACEHOLDER_IMG
+    })
 
 def listing(request, listing_id):
+    """Listing page. Shows information about the listing.
+    User can add listing to watchlist and bid on listing here"""
+
+    # Check if listing url exists.
     try:
         listing = Listing.objects.get(pk=listing_id)
     except Listing.DoesNotExist:
-        # TODO: notfoundpage
-        return HttpResponseRedirect(reverse("index"))
-    else:
+        raise Http404
+    
+    # Show listing info   
+    if request.method == "GET":
         return render(request, "auctions/listing.html", {
             "listing": listing,
+            "on_watchlist": listing in request.user.watched_listing.all(),
             "placeholder_img": PLACEHOLDER_IMG
         })
+    
+    # Add or remove listing from watchlist    
+    elif request.method == "POST":
+        if "add_watchlist" in request.POST:
+            request.user.watched_listing.add(listing_id)
+        elif "rm_watchlist" in request.POST:
+            request.user.watched_listing.remove(listing_id)
+
+        return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing.id}))
+
 
 
 @login_required
 def create_listing(request):
+    """Page where user creates a new listing"""
 
     if request.method == "POST":
         form = CreateListingForm(request.POST)
 
-        # Check if form data is valid (server-side)
         if form.is_valid():
 
-            # Create listing in database
+            # If for mis valid, create listing in database
             listing = form.save(commit=False)
             listing.user = request.user
             listing.save()
             return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing.id}))
 
         else:
-            title = request.POST["title"]
-            category = request.POST["category"]
-            description = request.POST["description"]
-            image_url = request.POST["image_url"]
-            starting_bid = request.POST["starting_bid"]
+            # If form is not valid, rerender page with user input intact
             return render(request, "auctions/create_listing.html", {
-                "form": CreateListingForm(initial={"title": title, "category": category, "description": description, "image_url": image_url, "starting_bid": starting_bid})
+                "form": CreateListingForm(initial=request.POST.dict())
             })
 
     else:

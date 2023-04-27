@@ -6,6 +6,7 @@ from .globals import CATEGORIES
 
 class User(AbstractUser):
     id = models.AutoField(primary_key=True)
+    watched_listing = models.ManyToManyField('Listing', related_name='watched_listing')
 
 class Listing(models.Model):
     
@@ -19,3 +20,5 @@ class Listing(models.Model):
     category = models.CharField(max_length=64, choices=CATEGORIES)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
