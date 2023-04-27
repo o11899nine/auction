@@ -70,12 +70,50 @@
 </style>{% endblock %}
 
 {% block content %}
-<h4>All listings</h4>
+<!-- User watchlist -->
+<h4>Your watchlist</h4>
+{% if not watched_listings %}
+You are not watching any listings yet.
+{% endif %}
+
 <!-- Grid for cards -->
 <div class="row listing-grid g-2">
 
     <!-- Card for every listing -->
-    {% for listing in all_listings %}
+    {% for listing in watched_listings %}
+    <div class="col">
+        <div class="card h-100">
+            {% if listing.image_url %}
+            <img src="{{ listing.image_url }}" alt="Listing image" class="card-img-top mx-auto"
+                onerror="this.src='{{ placeholder_img }}'"></a>
+            {% else %}
+            <img src="{{ placeholder_img }}" alt="Listing image" class="card-img-top mx-auto"></a>
+            {% endif %}
+            <div class="card-body">
+                <a href="{% url 'listing' listing.pk %}" class="mp-link stretched-link">
+                    <h6>{{ listing.title|truncatechars:50 }}</h6>
+                </a>
+                <h6 class="mp-darkblue">€{{ listing.starting_bid|floatformat:2 }}</h6>
+                <p class="card-text">{{ listing.description|truncatechars:100}}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<br><br>
+
+<!-- User listings -->
+<h4>Your listings</h4>
+{% if not user_listings %}
+You have not posted any listings yet.
+{% endif %}
+
+<!-- Grid for cards -->
+<div class="row listing-grid g-2">
+
+    <!-- Card for every listing -->
+    {% for listing in user_listings %}
     <div class="col">
         <div class="card h-100">
             {% if listing.image_url %}
@@ -95,5 +133,6 @@
     </div>
     {% endfor %}
 </div>
+
 
 {% endblock %}

@@ -12,45 +12,64 @@
         object-fit: cover;
     }
 
-    h6, h5 {
-        color:rgb(14, 14, 148);
+    h6,
+    h5 {
+        color: rgb(14, 14, 148);
+    }
+
+    .btn-watchlist {
+        width: 100%;
     }
 </style>{% endblock %}
 {% block content %}
-        <div class="container border rounded-4 shadow-sm p-4" style="word-wrap: break-word;">
-            <h3 class="mp-darkblue">{{ listing.title }}</h3>
-            <div class="row py-4">
-                <div class="col-12 col-sm-8 col-xl-6">{% if listing.image_url %}
-                    <img src="{{ listing.image_url }}" alt="Listing image" class="listing-img"
-                        onerror="this.src='{{ placeholder_img }}'"></a>
+<div class="container border rounded-4 shadow-sm p-4" style="word-wrap: break-word;">
+    <h3 class="mp-darkblue">{{ listing.title }}</h3>
+    <div class="row py-4">
+        <!-- Listing image -->
+        <div class="col-12 col-sm-8 col-xl-6">{% if listing.image_url %}
+            <img src="{{ listing.image_url }}" alt="Listing image" class="listing-img"
+                onerror="this.src='{{ placeholder_img }}'"></a>
+            {% else %}
+            <img src="{{ placeholder_img }}" alt="Listing image" class="listing-img"></a>
+            {% endif %}
+        </div>
+        <div class="col-12 col-sm-4 col-xl-4">
+            <!-- Watchlist buttons -->
+            <div class="row p-2">
+                <form action="{% url 'listing' listing.pk %}" method="post">
+                    {% csrf_token %}
+                    {% if not on_watchlist %}
+                    <input class="btn btn-success btn-watchlist" name="add_watchlist" type="submit" value="+ Add to watchlist">
                     {% else %}
-                    <img src="{{ placeholder_img }}" alt="Listing image" class="listing-img"></a>
+                    <input class="btn btn-danger btn-watchlist" name="rm_watchlist" type="submit" value="- Remove from watchlist">
                     {% endif %}
-                </div>
-                <div class="col-12 col-sm-4 col-xl-4">
-                    <div class="row p-2">
-                        <h5>Highest bid</h5>
-                        <p style="font-size:1.5rem;">€{{ listing.starting_bid|floatformat:2}}</p>
-                    </div>
-                    <div class="row p-2">
-                        <h6>Sold by</h6>
-                        <p>{{ listing.user }}</p>
-                    </div>
-                    <div class="row p-2">
-                        <h6>Online since</h6>
-                        <p>{{ listing.created_at|date:"d F Y" }}</p>
-                    </div>
-                </div>
+                </form>
+            </div>
+            <!-- Listing info -->
+            <div class="row p-2">
+                <h5>Highest bid</h5>
+                <p style="font-size:1.5rem;">€{{ listing.starting_bid|floatformat:2}}</p>
             </div>
 
-
             <div class="row p-2">
-                <h6>Description</h6>
-                <p>{{ listing.description|linebreaks }}</p>
-
+                <h6>Sold by</h6>
+                <p>{{ listing.user }}</p>
+            </div>
+            <div class="row p-2">
+                <h6>Online since</h6>
+                <p>{{ listing.created_at|date:"d F Y" }}</p>
             </div>
         </div>
     </div>
 
+    <!-- Listing description -->
+    <div class="row p-2">
+        <h6>Description</h6>
+        <p>{{ listing.description|linebreaks }}</p>
 
-    {% endblock %}
+    </div>
+</div>
+</div>
+
+
+{% endblock %}
