@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -6,40 +7,59 @@ from django.urls import reverse
 
 from .models import User, Listing
 from .forms import CreateListingForm
+from .globals import PLACEHOLDER_IMG
 
 
 def index(request):
     return render(request, "auctions/index.html", {
         "all_listings": Listing.objects.all().order_by("-created_at"),
+        "placeholder_img": PLACEHOLDER_IMG
     })
 
+
+def listing(request, listing_id):
+    try:
+        listing = Listing.objects.get(pk=listing_id)
+    except Listing.DoesNotExist:
+        # TODO: notfoundpage
+        return HttpResponseRedirect(reverse("index"))
+    else:
+        return render(request, "auctions/listing.html", {
+            "listing": listing,
+            "placeholder_img": PLACEHOLDER_IMG
+        })
+
+
+@login_required
 def create_listing(request):
-    
+
     if request.method == "POST":
         form = CreateListingForm(request.POST)
-        title = request.POST["title"]
-        category = request.POST["category"]
-        description = request.POST["description"]
-        image_url = request.POST["image_url"]
-        starting_bid = request.POST["starting_bid"]
 
         # Check if form data is valid (server-side)
         if form.is_valid():
-            
+
             # Create listing in database
-            listing = Listing(title=title, category=category, description=description, image_url=image_url, starting_bid=starting_bid)
+            listing = form.save(commit=False)
+            listing.user = request.user
             listing.save()
-            return HttpResponseRedirect(reverse("index"))
-        
+            return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing.id}))
+
         else:
+            title = request.POST["title"]
+            category = request.POST["category"]
+            description = request.POST["description"]
+            image_url = request.POST["image_url"]
+            starting_bid = request.POST["starting_bid"]
             return render(request, "auctions/create_listing.html", {
                 "form": CreateListingForm(initial={"title": title, "category": category, "description": description, "image_url": image_url, "starting_bid": starting_bid})
-                })
+            })
 
     else:
         return render(request, "auctions/create_listing.html", {
             "form": CreateListingForm()
         })
+
 
 def login_view(request):
     if request.method == "POST":
@@ -61,6 +81,7 @@ def login_view(request):
         return render(request, "auctions/login.html")
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
