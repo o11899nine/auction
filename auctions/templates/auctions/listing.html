@@ -4,6 +4,7 @@
 {% block style %}<style>
     .container {
         background-color: white;
+        max-width: 800px;
     }
 
     .listing-img {
@@ -16,9 +17,7 @@
     }
 </style>{% endblock %}
 {% block content %}
-<div class="row justify-content-center gy-4" style="word-wrap: break-word;">
-    <div class="col-12 col-lg-8 col-xl-6">
-        <div class="container border rounded-4 shadow-sm p-4">
+        <div class="container border rounded-4 shadow-sm p-4" style="word-wrap: break-word;">
             <h3 class="mp-darkblue">{{ listing.title }}</h3>
             <div class="row py-4">
                 <div class="col-12 col-sm-8 col-xl-6">{% if listing.image_url %}
@@ -50,11 +49,6 @@
                 <p>{{ listing.description|linebreaks }}</p>
 
             </div>
-        </div>
-    </div>
-    <div class="col-12 col-lg-3 col-xl-2">
-        <div class="container border rounded-4 shadow-sm p-4">
-            <h3 class="mp-darkblue">Place bid</h3>
         </div>
     </div>
 
