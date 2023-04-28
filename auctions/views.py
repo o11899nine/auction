@@ -51,9 +51,10 @@ def listing(request, id):
     except Listing.DoesNotExist:
         raise Http404
     
+  
     if request.method == "GET":
 
-        # Show watchlist buttons if user is logged in
+        # Show watchlist buttons if user is logged in and user is not listing owner
         if request.user.is_authenticated:
             on_watchlist = listing in request.user.watched_listing.all()
         else:
@@ -71,13 +72,13 @@ def listing(request, id):
 
     elif request.method == "POST":
         # Add or remove listing from watchlist
-        if "add_watchlist" in request.POST:
+        if "add_watchlist" in request.POST and request.user != listing.user:
             request.user.watched_listing.add(listing.id)
-        elif "rm_watchlist" in request.POST:
+        elif "rm_watchlist" in request.POST and request.user != listing.user:
             request.user.watched_listing.remove(listing.id)
 
         # Place bid
-        elif "place_bid" in request.POST:
+        elif "place_bid" in request.POST and request.user != listing.user:
             form = BidForm(request.POST)
 
             if form.is_valid():
