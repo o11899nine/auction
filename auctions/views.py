@@ -10,23 +10,31 @@ from .models import User, Listing
 from .forms import CreateListingForm
 from .globals import PLACEHOLDER_IMG
 
+def show_listings(request, title, header, listings):
+    return render(request, f"auctions/show_listings.html",{
+        "title": title,
+        "header": header,
+        "listings": listings.order_by("-created_at"),
+        "placeholder_img": PLACEHOLDER_IMG
+    })
 
 def index(request):
     """Homepage. Shows all listings by all users."""
 
-    return render(request, "auctions/index.html", {
-        "all_listings": Listing.objects.all().order_by("-created_at"),
-        "placeholder_img": PLACEHOLDER_IMG
-    })
+    return show_listings(request, "Auctions", "All listings", Listing.objects.all())
 
 @login_required
 def watchlist(request):
-    """Shows user's watched listings and user's own listings"""
-    return render(request, "auctions/watchlist.html", {
-        "user_listings": Listing.objects.filter(user_id=request.user.id),
-        "watched_listings": request.user.watched_listing.all(),
-        "placeholder_img": PLACEHOLDER_IMG
-    })
+    """Shows user's watched listings"""
+
+    return show_listings(request, "My watchlist", "My watchlist", request.user.watched_listing.all())
+
+@login_required
+def user_listings(request):
+    """Shows user's listings"""
+
+    return show_listings(request, "My listings", "My listings", Listing.objects.filter(user_id=request.user.id))
+
 
 def listing(request, listing_id):
     """Listing page. Shows information about the listing.
