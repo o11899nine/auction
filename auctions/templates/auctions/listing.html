@@ -14,10 +14,6 @@
     .btn {
         width: 100%;
     }
-
-    .bid {
-        font-size: 0.8rem;
-    }
 </style>{% endblock %}
 {% block content %}
 <div class="row justify-content-center gy-2">
@@ -42,20 +38,22 @@
 
                     <!-- Watchlist buttons -->
                     {% if user.is_authenticated and user != listing.user %}
-                    <div class="row pb-4 pt-2 pt-sm-2">
+                    {% autoescape off %}
+                    <div class="row pb-4 pt-2 pt-md-0">
                         <form action="{% url 'listing' listing.pk %}" method="post">
                             {% csrf_token %}
 
                             {% if not on_watchlist %}
-                            <input class="btn btn-success btn-watchlist" name="add_watchlist" type="submit"
+                            <input class="btn btn-outline-success btn-watchlist" name="add_watchlist" type="submit"
                                 value="+ Add to watchlist">
                             {% else %}
-                            <input class="btn btn-danger btn-watchlist" name="rm_watchlist" type="submit"
+                            <input class="btn btn-outline-danger btn-watchlist" name="rm_watchlist" type="submit"
                                 value="- Remove from watchlist">
                             {% endif %}
 
                         </form>
                     </div>
+                    {% endautoescape %}
                     {% endif %}
 
                     <!-- Listing info -->
@@ -66,7 +64,7 @@
                     <div class="row">
                         <h6 class="mp-lightblue">Sold by</h6>
                         {% if user == listing.user %}
-                        <p style="color:green;">You</p>
+                        <p class="listing-user">You</p>
                         {% else %}
                         <p>{{ listing.user|truncatechars:20 }}</p>
                         {% endif %}
@@ -85,38 +83,85 @@
             </div>
         </div>
     </div>
-    <!-- Right(bid) container -->
+    <!-- Right(bid/comment) container -->
     <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-3">
-        <div class="container border rounded-4 shadow-sm p-4" style="word-wrap: break-word;">
-            <h5>Bids</h5>
+        <div class="container border rounded-4 shadow-sm px-4 pt-4 pb-2 mb-lg-4 mb-2" style="word-wrap: break-word;">
+            <h5 class="mp-darkblue">Place bid</h5>
 
-            <!-- Form to place bid -->
-            <p>
+            <!-- Bid form -->
             {% if user.is_authenticated and user != listing.user %}
-            
-                {% load django_bootstrap5 %}
+            {% load django_bootstrap5 %}
             <form action="{% url 'listing' listing.pk %}" method="post">
                 {% csrf_token %}
-                {% bootstrap_field form.amount show_label=False addon_before="€"%}
-                {% bootstrap_button "Place bid" button_type="submit" button_class="btn-primary" name="place_bid" %}
+                <div class="row pt-2 g-1">
+                    <div class="col-10">{% bootstrap_field bid_form.amount show_label=False addon_before="€"%}</div>
+                    <div class="col-2">{% bootstrap_button content=bid_icon|safe button_type="submit" button_class="btn-primary" name="place_bid" %}</div>
+                </div>
             </form>
             {% elif not user.is_authenticated %}
-            <a href="{% url 'login' %}" class="mp-link">Log in</a> to bid on this item.
+            <a href="{% url 'login' %}" class="mp-link">Log in</a> to bid.
             {% endif %}
-            </p>
-
-            <!-- Top bids -->
+            <!-- Bids -->
             {% if bids %}
-                {% for bid in bids %}
+            <h6 class="mp-darkblue pb-2">Top bids</h6>
+            {% for bid in bids %}
+            <div class="row">
+                <div class="col-7">{{ bid.user|truncatechars:20 }}</div>
+                <div class="col-5">€{{ bid.amount|floatformat:2 }}</div>
+            </div>
+            <hr>
+            {% endfor %}
+            {% else %}
+            No bids have been placed.
+            {% endif %}
+        </div>
+        <div class="container border rounded-4 shadow-sm px-4 pt-4 pb-0" style="word-wrap: break-word;">
+            <h5 class="mp-darkblue pb-2">Comments</h5>
+
+            <!-- Comments -->
+            {% if comments %}
+            <div class="scroll-div">
+                {% for comment in comments %}
+
+                <p class="small-text">{{ comment.text|linebreaksbr }}<br>
+                <!-- Delete button -->
+                {% if user == comment.user %}
+                <form action="{% url 'listing' listing.pk %}" method="post" class="form-inline">
+                    {% csrf_token %}
+                    <button name="delete_comment" class="img-btn">{{ delete_icon|safe }}</button>
+                </form>
+                {% endif %}
+                <!-- Username -->
+                {% if comment.user == listing.user %}
+                <span class="listing-user small-text">{{ comment.user|truncatechars:20 }}</span>
+                {% else %}
+                <span class="greyed-out small-text">{{ comment.user|truncatechars:20 }}</span>
+                {% endif %}
+
+                <!-- Date -->
+                <span class="greyed-out small-text"> | {{ comment.date|date:"d M, Y - H:i"}}</span>
+            
+                </p>
                 <hr>
-                <div class="row bid">
-                    <div class="col-7">{{ bid.user|truncatechars:20 }}</div> 
-                    <div class="col-5">€{{ bid.amount|floatformat:2 }}</div>
-                </div>
                 {% endfor %}
+            </div>
+            {% endif %}
+            <!-- Comment form -->
+            {% if user.is_authenticated %}
+            {% load django_bootstrap5 %}
+            <form action="{% url 'listing' listing.pk %}" method="post">
+                {% csrf_token %}
+                <div class="row g-1">
+                    <div class="col-10">{% bootstrap_field comment_form.text show_label=False%}</div>
+                    <div class="col-2">{% bootstrap_button content=post_icon|safe button_type="submit" button_class="btn-primary" name="post_comment" %}</div>
+                </div>
+            </form>
+            {% elif not user.is_authenticated %}
+            <a href="{% url 'login' %}" class="mp-link">Log in</a> to comment.
             {% endif %}
         </div>
     </div>
+
 </div>
 
 
