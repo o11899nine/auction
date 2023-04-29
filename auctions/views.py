@@ -1,24 +1,15 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.db.models import Max
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.http import Http404
 
-from .models import User, Listing, Bid
-from .forms import CreateListingForm, BidForm
-from .globals import PLACEHOLDER_IMG
-
-
-def show_listings(request, title, header, listings):
-    return render(request, f"auctions/show_listings.html", {
-        "title": title,
-        "header": header,
-        "listings": listings.order_by("-date"),
-        "placeholder_img": PLACEHOLDER_IMG
-    })
+from .models import User, Listing, Bid,Comment
+from .helpers import place_bid, show_listings, post_comment
+from .forms import CreateListingForm, BidForm, CommentForm
+from .globals import PLACEHOLDER_IMG, POST_ICON, BID_ICON, DELETE_ICON
 
 
 def index(request):
@@ -54,20 +45,26 @@ def listing(request, id):
   
     if request.method == "GET":
 
-        # Show watchlist buttons if user is logged in and user is not listing owner
+        # Show watchlist buttons if user is logged in and user is not listing listing-user
         if request.user.is_authenticated:
             on_watchlist = listing in request.user.watched_listing.all()
         else:
             on_watchlist = False
 
-        top5_bids = Bid.objects.filter(listing_id=listing.id).order_by('-amount')[:5]
+        top_bids = Bid.objects.filter(listing_id=listing.id).order_by('-amount')[:3]
+        comments = Comment.objects.filter(listing_id=listing.id).order_by('-date')
         
         return render(request, "auctions/listing.html", {
             "listing": listing,
             "on_watchlist": on_watchlist,
             "placeholder_img": PLACEHOLDER_IMG,
-            "form": BidForm(),
-            "bids": top5_bids
+            "bid_form": BidForm(),
+            "bids": top_bids,
+            "bid_icon": BID_ICON,
+            "comment_form": CommentForm(),
+            "comments": comments,
+            "post_icon": POST_ICON,
+            "delete_icon": DELETE_ICON
         })
 
     elif request.method == "POST":
@@ -78,22 +75,12 @@ def listing(request, id):
             request.user.watched_listing.remove(listing.id)
 
         # Place bid
-        elif "place_bid" in request.POST and request.user != listing.user:
-            form = BidForm(request.POST)
-
-            if form.is_valid():
-                # record bid
-                bid = form.save(commit=False)
-                if bid.amount > listing.highest_bid:
-                    bid.listing = listing
-                    bid.user = request.user
-                    bid.save()
-
-                    # update listing highest_bid
-                    listing.highest_bid = bid.amount
-                    listing.save()
-
-                return HttpResponseRedirect(reverse('listing', kwargs={'id': listing.id}))
+        if "place_bid" in request.POST and request.user != listing.user:
+            place_bid(request, listing)
+        
+        # Post comment
+        if "post_comment" in request.POST:
+            post_comment(request, listing)
 
         # If form is not valid, rerender page with user input intact
         return HttpResponseRedirect(reverse('listing', kwargs={'id': listing.id}))

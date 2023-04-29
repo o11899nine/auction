@@ -1,5 +1,5 @@
 from django.forms import ModelForm, Textarea, NumberInput
-from .models import Listing, Bid
+from .models import Listing, Bid, Comment
 
 class CreateListingForm(ModelForm):
     class Meta:
@@ -19,4 +19,14 @@ class BidForm(ModelForm):
         exclude = ['user', 'listing']
         widgets = {
             'amount': NumberInput(attrs={'min': 0, 'max': 1000000, 'placeholder': "00.00"})
+        }
+
+
+class CommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = "__all__"
+        exclude = ['user', 'listing']
+        widgets = {
+            'text': Textarea(attrs={'rows': 1, 'style': 'resize:none;', 'placeholder': "Write a comment..."})
         }
