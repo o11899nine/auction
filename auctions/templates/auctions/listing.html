@@ -123,14 +123,8 @@
             <div class="scroll-div">
                 {% for comment in comments %}
 
-                <p class="small-text">{{ comment.text|linebreaksbr }}<br>
-                <!-- Delete button -->
-                {% if user == comment.user %}
-                <form action="{% url 'listing' listing.pk %}" method="post" class="form-inline">
-                    {% csrf_token %}
-                    <button name="delete_comment" class="img-btn">{{ delete_icon|safe }}</button>
-                </form>
-                {% endif %}
+                <span class="small-text">{{ comment.text|linebreaksbr }}</span>
+                <br>
                 <!-- Username -->
                 {% if comment.user == listing.user %}
                 <span class="listing-user small-text">{{ comment.user|truncatechars:20 }}</span>
@@ -140,8 +134,15 @@
 
                 <!-- Date -->
                 <span class="greyed-out small-text"> | {{ comment.date|date:"d M, Y - H:i"}}</span>
-            
-                </p>
+
+                <!-- Delete button -->
+                {% if user == comment.user %}
+                <form action="{% url 'listing' listing.pk %}" method="post" class="form-inline">
+                    {% csrf_token %}
+                    <button name="delete_comment" class="X-btn small-text">X</button>
+                </form>
+                {% endif %}
+        
                 <hr>
                 {% endfor %}
             </div>

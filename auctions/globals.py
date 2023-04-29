@@ -11,4 +11,3 @@ PLACEHOLDER_IMG = "https://lh3.googleusercontent.com/EbXw8rOdYxOGdXEFjgNP8lh-YAu
 
 POST_ICON = '<i class="material-icons" style="font-size:1rem;color:white">send</i>'
 BID_ICON = '<i class="material-icons" style="font-size:1rem;color:white">gavel</i>'
-DELETE_ICON = '<i class="material-icons" style="font-size:1rem;color:red;opacity:0.5;">delete</i>'

@@ -9,7 +9,7 @@ from django.http import Http404
 from .models import User, Listing, Bid,Comment
 from .helpers import place_bid, show_listings, post_comment
 from .forms import CreateListingForm, BidForm, CommentForm
-from .globals import PLACEHOLDER_IMG, POST_ICON, BID_ICON, DELETE_ICON
+from .globals import PLACEHOLDER_IMG, POST_ICON, BID_ICON
 
 
 def index(request):
@@ -64,7 +64,6 @@ def listing(request, id):
             "comment_form": CommentForm(),
             "comments": comments,
             "post_icon": POST_ICON,
-            "delete_icon": DELETE_ICON
         })
 
     elif request.method == "POST":
