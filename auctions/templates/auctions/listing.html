@@ -91,7 +91,7 @@
                     {% endif %}
                     
                     <div class="row">
-                        <h6 class="mp-lightblue">Sold by</h6>
+                        <h6 class="mp-lightblue">Owner</h6>
                         {% if user == listing.user %}
                         <p class="listing-user">You</p>
                         {% else %}
@@ -99,7 +99,7 @@
                         {% endif %}
                     </div>
                     <div class="row">
-                        <h6 class="mp-lightblue">Start date</h6>
+                        <h6 class="mp-lightblue">Posted</h6>
                         <p>{{ listing.date|date:"d F Y"}}</p>
                     </div>
                     
