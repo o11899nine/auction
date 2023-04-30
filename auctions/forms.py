@@ -5,7 +5,7 @@ class CreateListingForm(ModelForm):
     class Meta:
         model = Listing
         fields = "__all__"
-        exclude = ['user', 'highest_bid']
+        exclude = ['user', 'highest_bid', 'active']
         widgets = {
             'description': Textarea(attrs={'rows': 10, 'style': 'resize:none;'}),
             'starting_bid': NumberInput(attrs={'min': 0, 'max': 1000000, 'placeholder': "00.00"})

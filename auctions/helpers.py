@@ -15,19 +15,20 @@ def post_comment(request, listing):
         comment.save()
 
 def place_bid(request, listing):
-    form = BidForm(request.POST)
+    if listing.active:
+        form = BidForm(request.POST)
 
-    if form.is_valid():
-        # record bid
-        bid = form.save(commit=False)
-        if bid.amount > listing.highest_bid:
-            bid.listing = listing
-            bid.user = request.user
-            bid.save()
+        if form.is_valid():
+            # record bid
+            bid = form.save(commit=False)
+            if bid.amount > listing.highest_bid:
+                bid.listing = listing
+                bid.user = request.user
+                bid.save()
 
-            # update listing highest_bid
-            listing.highest_bid = bid.amount
-            listing.save()
+                # update listing highest_bid
+                listing.highest_bid = bid.amount
+                listing.save()
 
 
 def show_listings(request, title, header, listings):

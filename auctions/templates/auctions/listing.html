@@ -38,11 +38,10 @@
 
                     <!-- Watchlist buttons -->
                     {% if user.is_authenticated and user != listing.user %}
-                    {% autoescape off %}
                     <div class="row pb-4 pt-2 pt-md-0">
                         <form action="{% url 'listing' listing.pk %}" method="post">
                             {% csrf_token %}
-
+                            
                             {% if not on_watchlist %}
                             <input class="btn btn-outline-success btn-watchlist" name="add_watchlist" type="submit"
                                 value="+ Add to watchlist">
@@ -53,14 +52,44 @@
 
                         </form>
                     </div>
-                    {% endautoescape %}
+                    {% endif %}
+
+                    <!-- Close auction buton -->
+                    {% if user.is_authenticated and user == listing.user and listing.active %}
+                    <div class="row pb-4 pt-2 pt-md-0">
+                        <form action="{% url 'listing' listing.pk %}" method="post">
+                            {% csrf_token %}
+                            <input class="btn btn-primary btn-watchlist" name="close_auction" type="submit" value="Close auction">
+                        </form>
+                    </div>
+                    {% endif %}
+
+                    <!-- Auction closed info -->
+                    {% if not listing.active %}
+                    <h4 class="pt-3 pt-md-0"style="color:red;">Auction closed!</h4>
+                    <div class="row pt-2">
+                        
+                        {% if bids %}
+                        <h5 class="mp-lightblue">Winner</h5>
+                        {% with bids|first as bid %}
+                            {% if user == bid.user %}
+                            <h5 class="listing-user pb-2">You!</h5>
+                            {% else %}
+                            <h5 class="pb-2">{{ bid.user|truncatechars:20 }}</h5>
+                            {% endif %}
+                        {% endwith %}
+                        {% endif %}
+                    </div>
                     {% endif %}
 
                     <!-- Listing info -->
+                    {% if listing.active %}
                     <div class="row pt-2 pt-sm-0">
-                        <h5 class="mp-lightblue">Current price</h5>
-                        <p style="font-size:1.5rem;">€{{ listing.highest_bid|floatformat:2 }}</p>
+                        <h5 class="mp-lightblue">Starting bid</h5>
+                        <p style="font-size:1.5rem;">€{{ listing.starting_bid|floatformat:2 }}</p>
                     </div>
+                    {% endif %}
+                    
                     <div class="row">
                         <h6 class="mp-lightblue">Sold by</h6>
                         {% if user == listing.user %}
@@ -70,14 +99,15 @@
                         {% endif %}
                     </div>
                     <div class="row">
-                        <h6 class="mp-lightblue">Auctioned since</h6>
+                        <h6 class="mp-lightblue">Start date</h6>
                         <p>{{ listing.date|date:"d F Y"}}</p>
                     </div>
+                    
                 </div>
             </div>
 
             <!-- Listing description -->
-            <div class="row">
+            <div class="row pt-2">
                 <h6 class="mp-lightblue">Description</h6>
                 <p>{{ listing.description|linebreaksbr }}</p>
             </div>
@@ -86,11 +116,16 @@
     <!-- Right(bid/comment) container -->
     <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-3">
         <div class="container border rounded-4 shadow-sm px-4 pt-4 pb-2 mb-lg-4 mb-2" style="word-wrap: break-word;">
-            <h5 class="mp-darkblue">Place bid</h5>
+            {% if user != listing.user and not listing.active %}
+            <h5 class="mp-darkblue pb-2">Top bids</h5>
+            {% endif %}
+            {% if user.is_authenticated and user == listing.user %}
+            <h5 class="mp-darkblue pb-2">Top bids</h5>
 
             <!-- Bid form -->
-            {% if user.is_authenticated and user != listing.user %}
+            {% elif user.is_authenticated and user != listing.user and listing.active%}
             {% load django_bootstrap5 %}
+            <h5 class="mp-darkblue">Place bid</h5>
             <form action="{% url 'listing' listing.pk %}" method="post">
                 {% csrf_token %}
                 <div class="row pt-2 g-1">
@@ -98,21 +133,26 @@
                     <div class="col-2">{% bootstrap_button content=bid_icon|safe button_type="submit" button_class="btn-primary" name="place_bid" %}</div>
                 </div>
             </form>
-            {% elif not user.is_authenticated %}
-            <a href="{% url 'login' %}" class="mp-link">Log in</a> to bid.
+            {% elif not user.is_authenticated and listing.active %}
+            <h5 class="mp-darkblue">Place bid</h5>
+            <p><a href="{% url 'login' %}" class="mp-link">Log in</a> to bid.</p>
             {% endif %}
             <!-- Bids -->
             {% if bids %}
-            <h6 class="mp-darkblue pb-2">Top bids</h6>
-            {% for bid in bids %}
-            <div class="row">
-                <div class="col-7">{{ bid.user|truncatechars:20 }}</div>
-                <div class="col-5">€{{ bid.amount|floatformat:2 }}</div>
-            </div>
-            <hr>
-            {% endfor %}
-            {% else %}
-            No bids have been placed.
+                {% if user != listing.user %}
+                    {% if listing.active %}
+                    <h6 class="mp-darkblue pb-2">Top bids</h6>
+                    {% endif %}
+                {% endif %}
+                {% for bid in bids %}
+                <div class="row">
+                    <div class="col-7">{{ bid.user|truncatechars:20 }}</div>
+                    <div class="col-5">€{{ bid.amount|floatformat:2 }}</div>
+                </div>
+                <hr>
+                {% endfor %}
+            {% elif user.is_authenticated or user == listing.user %}
+            <p>No bids have been placed.</p>
             {% endif %}
         </div>
         <div class="container border rounded-4 shadow-sm px-4 pt-4 pb-0" style="word-wrap: break-word;">
@@ -129,19 +169,11 @@
                 {% if comment.user == listing.user %}
                 <span class="listing-user small-text">{{ comment.user|truncatechars:20 }}</span>
                 {% else %}
-                <span class="greyed-out small-text">{{ comment.user|truncatechars:20 }}</span>
+                <span class="faded grey small-text">{{ comment.user|truncatechars:20 }}</span>
                 {% endif %}
 
                 <!-- Date -->
-                <span class="greyed-out small-text"> | {{ comment.date|date:"d M, Y - H:i"}}</span>
-
-                <!-- Delete button -->
-                {% if user == comment.user %}
-                <form action="{% url 'listing' listing.pk %}" method="post" class="form-inline">
-                    {% csrf_token %}
-                    <button name="delete_comment" class="X-btn small-text">X</button>
-                </form>
-                {% endif %}
+                <span class="grey small-text"> | {{ comment.date|date:"d M, Y - H:i"}}</span>
         
                 <hr>
                 {% endfor %}
@@ -158,7 +190,7 @@
                 </div>
             </form>
             {% elif not user.is_authenticated %}
-            <a href="{% url 'login' %}" class="mp-link">Log in</a> to comment.
+            <p><a href="{% url 'login' %}" class="mp-link">Log in</a> to comment.</p>
             {% endif %}
         </div>
     </div>

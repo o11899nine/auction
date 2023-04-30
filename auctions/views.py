@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.http import Http404
 
-from .models import User, Listing, Bid,Comment
+from .models import User, Listing, Bid, Comment
 from .helpers import place_bid, show_listings, post_comment
 from .forms import CreateListingForm, BidForm, CommentForm
 from .globals import PLACEHOLDER_IMG, POST_ICON, BID_ICON
@@ -41,8 +41,7 @@ def listing(request, id):
         listing = Listing.objects.get(pk=id)
     except Listing.DoesNotExist:
         raise Http404
-    
-  
+
     if request.method == "GET":
 
         # Show watchlist buttons if user is logged in and user is not listing listing-user
@@ -51,9 +50,11 @@ def listing(request, id):
         else:
             on_watchlist = False
 
-        top_bids = Bid.objects.filter(listing_id=listing.id).order_by('-amount')[:3]
-        comments = Comment.objects.filter(listing_id=listing.id).order_by('-date')
-        
+        top_bids = Bid.objects.filter(
+            listing_id=listing.id).order_by('-amount')[:3]
+        comments = Comment.objects.filter(
+            listing_id=listing.id).order_by('-date')
+
         return render(request, "auctions/listing.html", {
             "listing": listing,
             "on_watchlist": on_watchlist,
@@ -67,6 +68,7 @@ def listing(request, id):
         })
 
     elif request.method == "POST":
+
         # Add or remove listing from watchlist
         if "add_watchlist" in request.POST and request.user != listing.user:
             request.user.watched_listing.add(listing.id)
@@ -76,10 +78,15 @@ def listing(request, id):
         # Place bid
         if "place_bid" in request.POST and request.user != listing.user:
             place_bid(request, listing)
-        
+
         # Post comment
         if "post_comment" in request.POST:
             post_comment(request, listing)
+
+        # Close auction
+        if "close_auction" in request.POST and request.user == listing.user and listing.active:
+            listing.active = False
+            listing.save()
 
         # If form is not valid, rerender page with user input intact
         return HttpResponseRedirect(reverse('listing', kwargs={'id': listing.id}))

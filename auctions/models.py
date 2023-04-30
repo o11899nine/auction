@@ -24,6 +24,7 @@ class Listing(models.Model):
     category = models.CharField(max_length=64, choices=CATEGORIES)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
 
 class Bid(models.Model):
     id = models.AutoField(primary_key=True)

@@ -73,7 +73,12 @@
                 <a href="{% url 'listing' listing.pk %}" class="mp-link stretched-link">
                     <h6>{{ listing.title|truncatechars:50 }}</h6>
                 </a>
-                <h6 class="mp-darkblue">€{{ listing.highest_bid|floatformat:2 }}</h6>
+                <h6 class="mp-darkblue">€{{ listing.highest_bid|floatformat:2 }}
+                {% if not listing.active %}
+                <span style="color:red;font-weight:normal" class="small-text">closed</span>
+                {% endif %}
+
+                </h6>
                 <p class="small-text">{{ listing.description|truncatechars:100}}</p>
             </div>
         </div>
