@@ -1,18 +1,12 @@
 {% extends "auctions/layout.html" %}
 {% block title %}Page not found{% endblock %}
 
-{% block style %}<style>
-    .container {
-        background-color: white;
-        max-width: 800px;
-    }
-</style>{% endblock %}
 {% block content %}
 
-<div class="container border rounded-4 shadow-sm p-4 ">
-    <h3 class="mp-darkblue">Oops, there is nothing here!</h3><br>
-    <h4>Go back to the <a href="{% url 'index' %}">homepage</a>?</h4>
-    <p>Or maybe you should <a href="{% url 'login_view' %}">log in</a> to visit this page?</p>
+<div class="mp-container pb-4" style="max-width:800px;">
+    <h3 class="mp-primary">Oops, there is nothing here!</h3><br>
+    <h4>Go back to the <a href="{% url 'index' %}" class="mp-link">homepage</a>?</h4>
+    <p>Or maybe you should <a href="{% url 'login_view' %}" class="mp-link">log in</a> to visit this page?</p>
 </div>
 
 {% endblock %}

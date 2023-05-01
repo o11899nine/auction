@@ -44,7 +44,7 @@ def listing(request, id):
 
     if request.method == "GET":
 
-        # Show watchlist buttons if user is logged in and user is not listing listing-user
+        # Show watchlist buttons if user is logged in and user is not listing highlight
         if request.user.is_authenticated:
             on_watchlist = listing in request.user.watched_listing.all()
         else:
