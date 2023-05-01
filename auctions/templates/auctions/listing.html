@@ -1,26 +1,12 @@
 {% extends "auctions/layout.html" %}
 {% block title %}{{ listing.title }}{% endblock %}
 
-{% block style %}<style>
-    .container {
-        background-color: white;
-    }
-
-    .listing-img {
-        width: 100%;
-        object-fit: cover;
-    }
-
-    .btn {
-        width: 100%;
-    }
-</style>{% endblock %}
 {% block content %}
 <div class="row justify-content-center gy-2">
     <!-- Left(listing) container -->
     <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-6">
-        <div class="container border rounded-4 shadow-sm px-4 pt-4 pb-0" style="word-wrap: break-word;">
-            <h3 class="mp-darkblue">{{ listing.title }}</h3>
+        <div class="mp-container pb-0">
+            <h3 class="mp-primary">{{ listing.title }}</h3>
             <div class="row py-2">
                 <!-- left column(image) -->
                 <div class="col-12 col-sm-12 col-md-7 col-lg-8">
@@ -43,10 +29,10 @@
                             {% csrf_token %}
                             
                             {% if not on_watchlist %}
-                            <input class="btn btn-outline-success btn-watchlist" name="add_watchlist" type="submit"
+                            <input class="btn btn-outline-success" name="add_watchlist" type="submit"
                                 value="+ Add to watchlist">
                             {% else %}
-                            <input class="btn btn-outline-danger btn-watchlist" name="rm_watchlist" type="submit"
+                            <input class="btn btn-outline-danger" name="rm_watchlist" type="submit"
                                 value="- Remove from watchlist">
                             {% endif %}
 
@@ -70,10 +56,10 @@
                     <div class="row pt-2">
                         
                         {% if bids %}
-                        <h5 class="mp-lightblue">Winner</h5>
+                        <h5 class="mp-secondary">Winner</h5>
                         {% with bids|first as bid %}
                             {% if user == bid.user %}
-                            <h5 class="listing-user pb-2">You!</h5>
+                            <h5 class="mp-highlight pb-2">You!</h5>
                             {% else %}
                             <h5 class="pb-2">{{ bid.user|truncatechars:20 }}</h5>
                             {% endif %}
@@ -85,21 +71,21 @@
                     <!-- Listing info -->
                     {% if listing.active %}
                     <div class="row pt-2 pt-sm-0">
-                        <h5 class="mp-lightblue">Starting bid</h5>
+                        <h5 class="mp-secondary">Starting bid</h5>
                         <p style="font-size:1.5rem;">€{{ listing.starting_bid|floatformat:2 }}</p>
                     </div>
                     {% endif %}
                     
                     <div class="row">
-                        <h6 class="mp-lightblue">Owner</h6>
+                        <h6 class="mp-secondary">Owner</h6>
                         {% if user == listing.user %}
-                        <p class="listing-user">You</p>
+                        <p class="mp-highlight">You</p>
                         {% else %}
                         <p>{{ listing.user|truncatechars:20 }}</p>
                         {% endif %}
                     </div>
                     <div class="row">
-                        <h6 class="mp-lightblue">Posted</h6>
+                        <h6 class="mp-secondary">Posted</h6>
                         <p>{{ listing.date|date:"d F Y"}}</p>
                     </div>
                     
@@ -108,24 +94,24 @@
 
             <!-- Listing description -->
             <div class="row pt-2">
-                <h6 class="mp-lightblue">Description</h6>
+                <h6 class="mp-secondary">Description</h6>
                 <p>{{ listing.description|linebreaksbr }}</p>
             </div>
         </div>
     </div>
     <!-- Right(bid/comment) container -->
     <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-3">
-        <div class="container border rounded-4 shadow-sm px-4 pt-4 pb-2 mb-lg-4 mb-2" style="word-wrap: break-word;">
+        <div class="mp-container pb-2 mb-lg-4 mb-2">
             {% if user != listing.user and not listing.active %}
-            <h5 class="mp-darkblue pb-2">Top bids</h5>
+            <h5 class="mp-primary pb-2">Top bids</h5>
             {% endif %}
             {% if user.is_authenticated and user == listing.user %}
-            <h5 class="mp-darkblue pb-2">Top bids</h5>
+            <h5 class="mp-primary pb-2">Top bids</h5>
 
             <!-- Bid form -->
             {% elif user.is_authenticated and user != listing.user and listing.active%}
             {% load django_bootstrap5 %}
-            <h5 class="mp-darkblue">Place bid</h5>
+            <h5 class="mp-primary">Place bid</h5>
             <form action="{% url 'listing' listing.pk %}" method="post">
                 {% csrf_token %}
                 <div class="row pt-2 g-1">
@@ -134,14 +120,14 @@
                 </div>
             </form>
             {% elif not user.is_authenticated and listing.active %}
-            <h5 class="mp-darkblue">Place bid</h5>
+            <h5 class="mp-primary">Place bid</h5>
             <p><a href="{% url 'login' %}" class="mp-link">Log in</a> to bid.</p>
             {% endif %}
             <!-- Bids -->
             {% if bids %}
                 {% if user != listing.user %}
                     {% if listing.active %}
-                    <h6 class="mp-darkblue pb-2">Top bids</h6>
+                    <h6 class="mp-primary pb-2">Top bids</h6>
                     {% endif %}
                 {% endif %}
                 {% for bid in bids %}
@@ -155,8 +141,8 @@
             <p>No bids have been placed.</p>
             {% endif %}
         </div>
-        <div class="container border rounded-4 shadow-sm px-4 pt-4 pb-0" style="word-wrap: break-word;">
-            <h5 class="mp-darkblue pb-2">Comments</h5>
+        <div class="mp-container pb-0">
+            <h5 class="mp-primary pb-2">Comments</h5>
 
             <!-- Comments -->
             {% if comments %}
@@ -167,13 +153,13 @@
                 <br>
                 <!-- Username -->
                 {% if comment.user == listing.user %}
-                <span class="listing-user small-text">{{ comment.user|truncatechars:20 }}</span>
+                <span class="mp-highlight small-text">{{ comment.user|truncatechars:20 }}</span>
                 {% else %}
-                <span class="faded grey small-text">{{ comment.user|truncatechars:20 }}</span>
+                <span class="faded small-text">{{ comment.user|truncatechars:20 }}</span>
                 {% endif %}
 
                 <!-- Date -->
-                <span class="grey small-text"> | {{ comment.date|date:"d M, Y - H:i"}}</span>
+                <span class="faded small-text"> | {{ comment.date|date:"d M, Y - H:i"}}</span>
         
                 <hr>
                 {% endfor %}
