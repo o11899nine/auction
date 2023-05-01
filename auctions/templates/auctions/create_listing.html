@@ -3,24 +3,25 @@
 
 {% block content %}
 
-<!-- Form to create new listing -->
-{% load django_bootstrap5 %}
+
 <div class="row justify-content-center gy-2">
-<div class="mp-container pb-4" style="max-width:800px;">
-    <form action="{% url 'create_listing' %}" method="post" class="form">
-        {% csrf_token %}
-        <div class="row">
-            <div class="col-sm-8">{% bootstrap_field form.title %}</div>
-            <div class="col-sm-4">{% bootstrap_field form.category %}</div>
-        </div>
-        {% bootstrap_field form.description %}
-        {% bootstrap_field form.image_url placeholder="https://example.com/image.jpg"%}
-   
+    <div class="mp-container pb-4" style="max-width:800px;">
+
+        <!-- Form to create new listing -->
+        <form action="{% url 'create_listing' %}" method="post" class="form">
+            {% load django_bootstrap5 %}
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-8">{% bootstrap_field form.title %}</div>
+                <div class="col-sm-4">{% bootstrap_field form.category %}</div>
+            </div>
+            {% bootstrap_field form.description %}
+            {% bootstrap_field form.image_url placeholder="https://example.com/image.jpg"%}
             <div class="col-6 col-sm-4 pb-1">{% bootstrap_field form.starting_bid addon_before="€"%}</div>
             {% bootstrap_button "Create listing" button_type="submit" button_class="btn-primary" %}
-   
-    </form>
-</div>
+        </form>
+        
+    </div>
 </div>
 
 {% endblock %}

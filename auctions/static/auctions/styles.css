@@ -22,7 +22,7 @@ body {
     color: #2f639e;
 }
 
-.mp-highlight {
+.highlight {
     color: green;
     font-weight: 500;
 }
@@ -34,20 +34,28 @@ body {
 }
 
 
-.btn-primary {
+.btn.btn-primary {
     background-color: #2D3C4D;
     border-color: #2D3C4D;
+   
 }
 
 
-.btn-primary:hover {
+.btn.btn-primary:hover {
     background-color: #232e3b;
     border-color: #232e3b;
+    
+}
+
+.btn.btn-primary:active {
+    background-color: #202a36;
+    border-color: #202a36;
+
 }
 
 /* buttons */
 .btn {
-    width: 100%
+    width: 100%;
 }
 
 /* divs */

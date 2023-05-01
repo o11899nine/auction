@@ -62,24 +62,34 @@
     <!-- Card for every listing -->
     {% for listing in listings %}
     <div class="col">
+
         <div class="card h-100">
+
+            <!-- Listing Image -->
             {% if listing.image_url %}
-            <img src="{{ listing.image_url }}" alt="Listing image" class="card-img-top mx-auto" onerror="this.src='{{ placeholder_img }}'"></a>
+                <img src="{{ listing.image_url }}" alt="Listing image" class="card-img-top mx-auto" onerror="this.src='{{ placeholder_img }}'"></a>
             {% else %}
-            <img src="{{ placeholder_img }}"
-                alt="Listing image" class="card-img-top mx-auto"></a>
+                <img src="{{ placeholder_img }}" alt="Listing image" class="card-img-top mx-auto"></a>
             {% endif %}
+
             <div class="card-body">
+                <!-- Listing title -->
                 <a href="{% url 'listing' listing.pk %}" class="mp-link stretched-link">
                     <h6>{{ listing.title|truncatechars:50 }}</h6>
                 </a>
-                <h6 class="mp-primary">€{{ listing.highest_bid|floatformat:2 }}
-                {% if not listing.active %}
-                <span style="color:red;font-weight:normal" class="small-text">closed</span>
-                {% endif %}
 
+                <!-- Highest bid / Closed alert -->
+                <h6 class="mp-primary">
+                    €{{ listing.highest_bid|floatformat:2 }}
+
+                    {% if not listing.active %}
+                        <span style="color:red;font-weight:normal" class="small-text">closed</span>
+                    {% endif %}
                 </h6>
+
+                <!-- Listing description -->
                 <p class="small-text">{{ listing.description|truncatechars:100}}</p>
+                
             </div>
         </div>
     </div>
