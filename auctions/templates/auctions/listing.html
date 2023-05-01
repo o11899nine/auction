@@ -113,9 +113,9 @@
 
             <!-- Place bid / Top bids header -->
             {% if user == listing.user or not listing.active %}
-                <h5 class="mp-primary">Top bids</h5>
+                <h5 class="mp-primary pb-2">Top bids</h5>
             {% else %}
-                <h5 class="mp-primary">Place bid</h5>
+                <h5 class="mp-primary pb-2">Place bid</h5>
             {% endif %}
 
             <!-- Bid form -->
@@ -123,7 +123,7 @@
                 <form action="{% url 'listing' listing.pk %}" method="post">
                     {% load django_bootstrap5 %}
                     {% csrf_token %}
-                    <div class="row pt-2 g-1">
+                    <div class="row g-1">
                         <div class="col-10">{% bootstrap_field bid_form.amount show_label=False addon_before="€"%}</div>
                         <div class="col-2">{% bootstrap_button content=bid_icon|safe button_type="submit" button_class="btn-primary" name="place_bid" %}</div>
                     </div>
