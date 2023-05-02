@@ -9,13 +9,22 @@ from django.http import Http404
 from .models import User, Listing, Bid, Comment
 from .helpers import place_bid, show_listings, post_comment
 from .forms import CreateListingForm, BidForm, CommentForm
-from .globals import PLACEHOLDER_IMG, POST_ICON, BID_ICON
+from .globals import PLACEHOLDER_IMG, POST_ICON, BID_ICON, CATEGORIES
 
 
 def index(request):
     """Homepage. Shows all listings by all users."""
 
     return show_listings(request, "Auctions", "All listings", Listing.objects.all())
+
+def categories(request, category):
+    """Shows all listing of a certain category"""
+
+    # If category exists, show listings. Else, throw 404.
+    if (any(category in i for i in CATEGORIES)):
+        return show_listings(request, "Auctions", f"{category}", Listing.objects.filter(category=category))
+    else:
+        raise Http404
 
 
 @login_required

@@ -5,7 +5,6 @@
 }
 
 .navbar-brand {
-    color: #2D3C4D;
     font-weight: 700;
 }
 
@@ -51,6 +50,16 @@ body {
     background-color: #202a36;
     border-color: #202a36;
 
+}
+
+.dropdown ul {
+    background-color: #EDA566;
+    border: none;
+    border-radius: 0;
+}
+
+.dropdown-menu a:hover {
+    background-color: #c7864d;
 }
 
 /* buttons */
