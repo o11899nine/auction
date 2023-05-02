@@ -1,5 +1,6 @@
 
 from django.shortcuts import render
+from django.contrib import messages
 
 from .forms import BidForm, CommentForm
 from .globals import PLACEHOLDER_IMG
@@ -13,6 +14,7 @@ def post_comment(request, listing):
         comment.listing = listing
         comment.user = request.user
         comment.save()
+    
 
 def place_bid(request, listing):
     if listing.active:
@@ -32,6 +34,9 @@ def place_bid(request, listing):
                 
                 # add listing to user's watchlist
                 request.user.watched_listing.add(listing.id)
+                
+            else:
+                return messages.error(request, f'Bid more than €{listing.highest_bid:.2f}', extra_tags='place_bid')
 
 
 def show_listings(request, title, header, listings):

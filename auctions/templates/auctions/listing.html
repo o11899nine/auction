@@ -138,6 +138,13 @@
                 <p><a href="{% url 'login' %}" class="mp-link">Log in</a> to bid.</p>
             {% endif %}
 
+            <!-- Bid messages -->
+            {%for message in messages %}
+                {%if "place_bid" in message.tags %}
+                    <p class="text-danger"> {{message}} </p>
+                {%endif%}
+            {%endfor%}
+
             <!-- Bids -->
             {% if bids %}
                 {% if user != listing.user and listing.active %}

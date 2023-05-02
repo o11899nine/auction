@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.http import Http404
+from django.contrib import messages
 
 from .models import User, Listing, Bid, Comment
 from .helpers import place_bid, show_listings, post_comment
