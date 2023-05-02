@@ -29,6 +29,9 @@ def place_bid(request, listing):
                 # update listing highest_bid
                 listing.highest_bid = bid.amount
                 listing.save()
+                
+                # add listing to user's watchlist
+                request.user.watched_listing.add(listing.id)
 
 
 def show_listings(request, title, header, listings):
